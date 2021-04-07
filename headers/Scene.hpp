@@ -20,5 +20,5 @@ class Scene {
         int numballs();
         int numlights();
 
-        Vect colour(Ray ray);
+        Vect colour(Ray ray, unsigned int depth);
 };

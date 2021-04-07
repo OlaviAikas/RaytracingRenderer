@@ -2,11 +2,14 @@
 #include "../headers/Ball.hpp"
 #include "../headers/Light.hpp"
 #include "../headers/Ray.hpp"
+#include <random>
+#include <chrono>
 #include <vector>
 #include <math.h>
 #include <limits>
 #include <iostream>
 
+#define GAMMA 2.2
 
 Scene::Scene() { }
 
@@ -34,7 +37,7 @@ int Scene::numlights() {
     return lights.size();
 }
 
-Vect Scene::colour(Ray ray) {
+Vect Scene::colour(Ray ray, unsigned int depth) {
     int nballs = numballs();
     int nlights = numlights();
     Ball* balls = get_balls();
@@ -50,10 +53,10 @@ Vect Scene::colour(Ray ray) {
         }
     }
     if (hitbn == -1) {
-        std::cout << "Ray didn't hit anything!!!" << std::endl;
-        return Vect(255, 255, 255);
+        return Vect(0, 0, 0);
     }
-    double tot_intensity = 0.5;
+    closest_hit += (closest_hit - balls[hitbn].get_pos())*0.0000001;
+    double tot_intensity = 0;
     for (int i = 0; i < nlights; i++) {
         Vect line_of_sight = lights[i].get_pos() - closest_hit;
         double sd = line_of_sight.norm();
@@ -61,19 +64,21 @@ Vect Scene::colour(Ray ray) {
         for (int b = 1; b < nballs; b++) {
             Ilist l = balls[b].intersections(Ray(closest_hit, line_of_sight));
             if (l.n == 0) { continue; }
-            if ((l.i1 - closest_hit).norm() > sd) {
-                std::cout << "entered here" << std::endl;
+            if ((l.i1 - closest_hit).norm() < sd) {
+                //std::cout << "entered here" << std::endl;
                 visible = false;
                 break;
             }
         }
         if (visible == false) {
-            std::cout << "This hit can't see the light" << std::endl;
+            //std::cout << "This hit can't see the light" << std::endl;
             continue;
         }
-        double ct = (lights[i].get_intensity()*balls[hitbn].get_alb())/(M_PI*M_PI*4*sd*sd);
+        double ct = (lights[i].get_intensity()*balls[hitbn].get_alb())/(4*M_PI*M_PI*sd*sd);
         double p = (closest_hit - balls[hitbn].get_pos()).normalize().dot((line_of_sight/sd));
         tot_intensity += ct*p;
     }
-    return balls[hitbn].get_colour()*tot_intensity;
+    //tot_intensity = 1/(1+exp(-4.5*tot_intensity + 2.3));
+    //return balls[hitbn].get_colour()*fmin(tot_intensity,1);
+    return balls[hitbn].get_colour()*pow(fmin(1, tot_intensity), 1/GAMMA);
 }

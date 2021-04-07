@@ -10,10 +10,8 @@ void print(Vect v) {
 }
 
 int main() {
-    Vect b(1,2,3);
-    Vect bn = b.normalize();
-    print(bn);
-    print(b.cross(bn));
-    std::cout << bn.norm() << std::endl;
+    for (int i = 0; i < 100; i++) {
+        std::cout << rand() << std::endl;
+    }
     return 0;
 }

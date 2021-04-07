@@ -11,7 +11,7 @@ Ball::Ball(Vect pos, double r)
 Ball::Ball(Vect pos, double r, Vect colour)
     : pos(pos), r(r),
       colour(colour),
-      alb(1), refl(0), ri(1) { }
+      alb(0.9), refl(0), ri(1) { }
     
 Ball::Ball(Vect pos, double r, Vect colour, double alb)
     : pos(pos), r(r),
@@ -21,12 +21,12 @@ Ball::Ball(Vect pos, double r, Vect colour, double alb)
 Ball::Ball(Vect pos, double r, double refl)
     : pos(pos), r(r),
       colour(Vect(255,255,255)),
-      alb(1), refl(refl), ri(1) { }
+      alb(0.9), refl(refl), ri(1) { }
 
 Ball::Ball(Vect pos, double r, double refl, double ri)
     : pos(pos), r(r),
       colour(Vect(255,255,255)),
-      alb(1), refl(refl), ri(ri) { }
+      alb(0.9), refl(refl), ri(ri) { }
 
 Ball::Ball(Vect pos, double r, Vect colour, double alb, double refl, double ri)
     : pos(pos), r(r),
@@ -59,8 +59,9 @@ double Ball::get_ri() const {
 }
 
 Ilist Ball::intersections(const Ray ray) {
-    double p =  ray.get_dir().dot(pos*-1);
-    double discriminant = p*p - (pos.norm()*pos.norm() - r*r);
+    double p =  ray.get_dir().dot(ray.get_start() - pos);
+    double ocn = (ray.get_start()-pos).norm();
+    double discriminant = p*p - (ocn*ocn - r*r);
     if (discriminant < 0) {
         return Ilist(0, Vect(0,0,0), Vect(0,0,0));
     }

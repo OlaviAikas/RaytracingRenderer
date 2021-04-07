@@ -5,7 +5,6 @@ class Ray {
     private:
         Vect start;
         Vect dir;
-        Vect colour;
 
     public:
         Ray(Vect start, Vect dir);
