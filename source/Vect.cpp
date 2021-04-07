@@ -2,6 +2,12 @@
 #include <iostream>
 #include <math.h>
 
+Vect::Vect() {
+    coors[0] = 0;
+    coors[1] = 0;
+    coors[2] = 0;
+}
+
 Vect::Vect(double x, double y, double z) {
     coors[0] = x;
     coors[1] = y;

@@ -2,6 +2,7 @@
 
 class Vect {
     public:
+        Vect();
         Vect(double x, double y, double z);
 
         Vect operator+(const Vect other);

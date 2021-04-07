@@ -9,8 +9,6 @@
 #include <limits>
 #include <iostream>
 
-#define GAMMA 2.2
-
 Scene::Scene() { }
 
 void Scene::add_ball(Ball ball) {
@@ -55,7 +53,14 @@ Vect Scene::colour(Ray ray, unsigned int depth) {
     if (hitbn == -1) {
         return Vect(0, 0, 0);
     }
-    closest_hit += (closest_hit - balls[hitbn].get_pos())*0.0000001;
+    Vect normal = (closest_hit - balls[hitbn].get_pos()).normalize();
+    closest_hit += normal*0.0000001;
+    if (balls[hitbn].get_refl() > 0 && depth > 0) {
+        if (rand()/ ((double) RAND_MAX) < balls[hitbn].get_refl()) {
+            Vect wr = ray.get_dir() - normal*(2*ray.get_dir().dot(normal));
+            return colour(Ray(closest_hit, wr), depth - 1);
+        }
+    }
     double tot_intensity = 0;
     for (int i = 0; i < nlights; i++) {
         Vect line_of_sight = lights[i].get_pos() - closest_hit;
@@ -78,7 +83,5 @@ Vect Scene::colour(Ray ray, unsigned int depth) {
         double p = (closest_hit - balls[hitbn].get_pos()).normalize().dot((line_of_sight/sd));
         tot_intensity += ct*p;
     }
-    //tot_intensity = 1/(1+exp(-4.5*tot_intensity + 2.3));
-    //return balls[hitbn].get_colour()*fmin(tot_intensity,1);
-    return balls[hitbn].get_colour()*pow(fmin(1, tot_intensity), 1/GAMMA);
+    return balls[hitbn].get_colour()*fmin(1, tot_intensity);
 }

@@ -14,7 +14,7 @@ OBJS := $(patsubst source/%.cpp,objects/%.o,$(SRCS))
 
 # Compiler and flags
 CXX := g++
-CFLAGS := --std=c++11 -O3
+CFLAGS := --std=c++11 -O3 -lpthread
 
 # Rules
 all: exec
