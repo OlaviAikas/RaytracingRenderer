@@ -3,11 +3,11 @@
 
 class Ray {
     private:
-        Vect start;
-        Vect dir;
+        const Vect start;
+        const Vect dir;
 
     public:
-        Ray(Vect start, Vect dir);
+        Ray(const Vect& start, const Vect& dir);
 
         Vect get_start() const;
         Vect get_dir() const;

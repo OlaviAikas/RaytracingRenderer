@@ -3,36 +3,42 @@
 #include "Ray.hpp"
 
 struct Ilist {
-    unsigned char n; //How many intersections
-    Vect i1; //Coordinates of intersections (if any).
-    Vect i2; //i1 is closer to the ray origin than i2, or of the intersections are behind the camera, then the other way around
-    Ilist(unsigned char n, Vect i1, Vect i2) : n(n), i1(i1), i2(i2) { };
+    unsigned char n; //0 if no intersection 1 if entering 2 if exiting (the ball)
+    Vect i; //Coordinates of the intersection (if any).
+    Ilist(unsigned char n, Vect i1) : n(n), i(i1) { };
 };
 
 
 class Ball {
     private:
-        Vect pos;
-        double r;
-        Vect colour;
-        double alb; //Albedo
-        double refl; //Reflectivity. 1 is a mirror, 0 doesn't reflect
-        double ri; //Index of refraction
+        const Vect pos;
+        const double r;
+        const Vect colour;
+        const double alb; //Albedo
+        const bool mirror; //Reflectivity. 1 is a mirror, 0 doesn't reflect
+        const double ri_in; //Index of refraction inside
+        const double ri_out; //Index of refraction outside
+        const double k0_in; //reflection coefficient for transparent balls inside
+        const double k0_out; //reflection coefficient for transparent balls outside
 
     public:
-        Ball(Vect pos, double r);
-        Ball(Vect pos, double r, Vect colour);
-        Ball(Vect pos, double r, Vect colour, double alb);
-        Ball(Vect pos, double r, double refl);
-        Ball(Vect pos, double r, double refl, double ri);
-        Ball(Vect pos, double r, Vect colour, double alb, double refl, double ri);
+        Ball(const Vect& pos, const double& r);
+        Ball(const Vect& pos, const double& r, const Vect& colour);
+        Ball(const Vect& pos, const double& r, const Vect& colour, const double& alb);
+        Ball(const Vect& pos, const double& r, const double& ri_in);
+        Ball(const Vect& pos, const double& r, const double& ri_in, const double& ri_out);
+        Ball(const Vect& pos, const double& r, const bool& mirror);
 
         Vect get_pos() const;
         double get_r() const;
         Vect get_colour() const;
         double get_alb() const;
-        double get_refl() const;
-        double get_ri() const;
-        //Get the VISIBLE intersections of the ball by the ray, e.g not behind the ray origin
-        Ilist intersections(Ray ray);
+        bool get_mirror() const;
+        double get_ri_in() const;
+        double get_ri_out() const;
+        double get_k0_in() const;
+        double get_k0_out() const;
+        //Get the nearest VISIBLE intersections of the ball by the ray, 
+        //e.g not behind the ray origin and indicate if the ray is going in or out
+        Ilist intersection(const Ray& ray) const;
 };

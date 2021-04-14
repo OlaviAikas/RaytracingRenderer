@@ -5,13 +5,13 @@ class Vect {
         Vect();
         Vect(double x, double y, double z);
 
-        Vect operator+(const Vect other);
-        Vect operator-(const Vect other);
-        Vect operator/(const double scalar);
-        Vect operator*(const double scalar);
+        Vect operator+(const Vect other) const;
+        Vect operator-(const Vect other) const;
+        Vect operator/(const double scalar) const;
+        Vect operator*(const double scalar) const;
         Vect& operator+=(const Vect other);
-        double dot(const Vect other);
-        Vect cross(const Vect other);
+        double dot(const Vect other) const;
+        Vect cross(const Vect other) const;
         double norm() const;
         Vect normalize() const;
         double get_x() const;

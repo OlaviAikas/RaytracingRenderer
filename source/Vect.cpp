@@ -26,11 +26,11 @@ double Vect::get_z() const {
     return coors[2];
 }
 
-Vect Vect::operator+(const Vect other) {
+Vect Vect::operator+(const Vect other) const {
     return Vect(coors[0] + other.get_x(), coors[1] + other.get_y(), coors[2] + other.get_z());
 }
 
-Vect Vect::operator-(const Vect other) {
+Vect Vect::operator-(const Vect other) const {
     return Vect(coors[0] - other.get_x(), coors[1] - other.get_y(), coors[2] - other.get_z());
 }
 
@@ -41,19 +41,19 @@ Vect& Vect::operator+=(const Vect other) {
     return *this;
 }
 
-Vect Vect::operator/(const double scalar) {
+Vect Vect::operator/(const double scalar) const {
     return Vect(coors[0]/scalar, coors[1]/scalar, coors[2]/scalar);
 }
 
-Vect Vect::operator*(const double scalar) {
+Vect Vect::operator*(const double scalar) const {
     return Vect(coors[0]*scalar, coors[1]*scalar, coors[2]*scalar);
 }
 
-double Vect::dot(const Vect other) {
+double Vect::dot(const Vect other) const {
     return coors[0]*other.get_x() + coors[1]*other.get_y() + coors[2]*other.get_z();
 }
 
-Vect Vect::cross(const Vect other) {
+Vect Vect::cross(const Vect other) const {
     return Vect(coors[1]*other.get_z() - coors[2]*other.get_y(), coors[2]*other.get_x() - coors[0]*other.get_z(), coors[0]*other.get_y() - coors[1]*other.get_x());
 }
 

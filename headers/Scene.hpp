@@ -14,11 +14,8 @@ class Scene {
         void add_ball(Ball ball);
         void add_light(Light light);
 
-        Ball* get_balls();
-        Light* get_lights();
+        int numballs() const;
+        int numlights() const;
 
-        int numballs();
-        int numlights();
-
-        Vect colour(Ray ray, unsigned int depth);
+        Vect colour(const Ray& ray, unsigned int depth, bool& break_early) const;
 };

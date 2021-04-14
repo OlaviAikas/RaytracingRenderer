@@ -2,7 +2,7 @@
 #include "../headers/Vect.hpp"
 
 
-Ray::Ray(Vect start, Vect dir) : start(start), 
+Ray::Ray(const Vect& start, const Vect& dir) : start(start), 
                                  dir(dir.normalize()) { }
 
 Vect Ray::get_start() const {
