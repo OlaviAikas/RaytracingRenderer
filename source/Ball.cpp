@@ -6,12 +6,12 @@
 Ball::Ball(const Vect& pos, const double& r) 
     : pos(pos), r(r), 
       colour(Vect(255, 255, 255)), 
-      alb(1), mirror(false), ri_in(-1), ri_out(1), k0_in(0), k0_out(0) { }
+      alb(0.9), mirror(false), ri_in(-1), ri_out(1), k0_in(0), k0_out(0) { }
 
 Ball::Ball(const Vect& pos, const double& r, const Vect& colour)
     : pos(pos), r(r),
       colour(colour),
-      alb(1), mirror(false), ri_in(-1), ri_out(1), k0_in(0), k0_out(0) { }
+      alb(0.9), mirror(false), ri_in(-1), ri_out(1), k0_in(0), k0_out(0) { }
     
 Ball::Ball(const Vect& pos, const double& r, const Vect& colour, const double& alb)
     : pos(pos), r(r),
@@ -21,21 +21,21 @@ Ball::Ball(const Vect& pos, const double& r, const Vect& colour, const double& a
 Ball::Ball(const Vect& pos, const double& r, const double& ri_in)
     : pos(pos), r(r),
       colour(Vect(255,255,255)),
-      alb(1), mirror(false), ri_in(ri_in), ri_out(1),
+      alb(0.9), mirror(false), ri_in(ri_in), ri_out(1),
       k0_in(((ri_in - ri_out)*(ri_in - ri_out))/((ri_in + ri_out)*(ri_in + ri_out))), 
       k0_out(((ri_out - ri_in)*(ri_out - ri_in))/((ri_out + ri_in)*(ri_out + ri_in))) { }
 
 Ball::Ball(const Vect& pos, const double& r, const double& ri_in, const double& ri_out)
     : pos(pos), r(r),
       colour(Vect(255,255,255)),
-      alb(1), mirror(false), ri_in(ri_in), ri_out(ri_out), 
+      alb(0.9), mirror(false), ri_in(ri_in), ri_out(ri_out), 
       k0_in(((ri_in - ri_out)*(ri_in - ri_out))/((ri_in + ri_out)*(ri_in + ri_out))), 
       k0_out(((ri_out - ri_in)*(ri_out - ri_in))/((ri_out + ri_in)*(ri_out + ri_in))) { }
 
 Ball::Ball(const Vect& pos, const double& r, const bool& mirror)
     : pos(pos), r(r),
       colour(Vect(255,255,255)),
-      alb(1), mirror(mirror), ri_in(-1), ri_out(1), k0_in(0), k0_out(0) { }
+      alb(0.9), mirror(mirror), ri_in(-1), ri_out(1), k0_in(0), k0_out(0) { }
 
 Vect Ball::get_pos() const {
     return pos;

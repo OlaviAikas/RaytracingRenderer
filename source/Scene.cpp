@@ -10,7 +10,6 @@
 #include <iostream>
 
 #define EPS 0.000000001
-#define GAMMA 2.2
 
 Scene::Scene() { }
 
@@ -30,7 +29,7 @@ int Scene::numlights() const {
     return lights.size();
 }
 
-Vect Scene::colour(const Ray& ray, unsigned int depth, bool& break_early) const {
+Vect Scene::colour(const Ray& ray, unsigned int depth, std::default_random_engine& engine, std::uniform_real_distribution<double>& distr) const {
     if (depth <= 0) {
         return Vect(0,0,0);
     }
@@ -58,7 +57,6 @@ Vect Scene::colour(const Ray& ray, unsigned int depth, bool& break_early) const 
         return Vect(0, 0, 0);
     }
     Vect normal = (closest_hit - balls[hitbn].get_pos()).normalize();
-    bool be = false;
     if (!going_in) {
         normal = normal*-1;
     }
@@ -72,10 +70,10 @@ Vect Scene::colour(const Ray& ray, unsigned int depth, bool& break_early) const 
             k0 = balls[hitbn].get_k0_in();
         }
         double rc = k0 + (1 - k0)*pow((1-abs(normal.dot(ray.get_dir()))), 5);
-        if (rand()/((double) RAND_MAX) < rc) {
+        if (distr(engine) < rc) {
             Vect wr = ray.get_dir() - normal*(2*ray.get_dir().dot(normal));
             closest_hit += normal*EPS;
-            return colour(Ray(closest_hit, wr), depth - 1, be);
+            return colour(Ray(closest_hit, wr), depth - 1, engine, distr);
         }
         double n1on2 = 0;
         if (going_in) {
@@ -91,16 +89,17 @@ Vect Scene::colour(const Ray& ray, unsigned int depth, bool& break_early) const 
             Vect wtT = (ray.get_dir() - (normal*rdn))*n1on2;
             Vect wtN = normal*-1*sqrt(rt);
             closest_hit = closest_hit - normal*EPS;
-            return colour(Ray(closest_hit, wtT + wtN), depth - 1, be);
+            return colour(Ray(closest_hit, wtT + wtN), depth - 1, engine, distr);
         }
     }
+    //Reflection
     if (tot_int_refl || balls[hitbn].get_mirror() == true) {
         //std::cout << "reflecting" << std::endl;
         Vect wr = ray.get_dir() - normal*(2*ray.get_dir().dot(normal));
         closest_hit += normal*EPS;
-        return colour(Ray(closest_hit, wr), depth - 1, be);
+        return colour(Ray(closest_hit, wr), depth - 1, engine, distr);
     }
-    break_early = true;
+    //Direct lighting
     closest_hit += normal*EPS;
     double tot_intensity = 0;
     for (int i = 0; i < nlights; i++) {
@@ -120,8 +119,26 @@ Vect Scene::colour(const Ray& ray, unsigned int depth, bool& break_early) const 
             continue;
         }
         double ct = (lights[i].get_intensity()*balls[hitbn].get_alb())/(4*M_PI*M_PI*sd*sd);
-        double p = (closest_hit - balls[hitbn].get_pos()).normalize().dot((line_of_sight/sd));
+        double p = std::max(normal.dot((line_of_sight/sd)), 0.);
         tot_intensity += ct*p;
     }
-    return balls[hitbn].get_colour()*tot_intensity;
+    //Indirect lighting random sample
+    double r1 = distr(engine);
+    double r2 = distr(engine);
+    double sqrt1mr2 = sqrt(1-r2);
+    double twopir1 = 2*M_PI*r1;
+    double x = cos(twopir1)*sqrt1mr2;
+    double y = sin(twopir1)*sqrt1mr2;
+    double z = sqrt(r2);
+    Vect T1, T2;
+    if (abs(x) <= abs(y), abs(x) <= abs(z)) {
+        T1 = Vect(0, -z, y).normalize();
+    } else if (abs(y) <= abs(x), abs(y) <= abs(z)) {
+        T1 = Vect(-z, 0, x).normalize();
+    } else {
+        T1 = Vect(-y, x, 0).normalize();
+    }
+    T2 = T1.cross(normal);
+    Vect wi = T1*x + T2*y + normal*z;
+    return balls[hitbn].get_colour()*tot_intensity + colour(Ray(closest_hit, wi), depth - 1, engine, distr)*balls[hitbn].get_alb();
 }

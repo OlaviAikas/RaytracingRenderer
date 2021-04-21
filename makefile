@@ -19,7 +19,7 @@ CFLAGS := --std=c++11 -O3 -lpthread
 # Rules
 all: exec
 
-debug: CFLAGS := --std=c++11 -g
+debug: CFLAGS := --std=c++11 -g -lpthread
 debug: clean exec
 
 profile: CFLAGS := --std=c++11 -pg
