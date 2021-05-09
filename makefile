@@ -14,15 +14,15 @@ OBJS := $(patsubst source/%.cpp,objects/%.o,$(SRCS))
 
 # Compiler and flags
 CXX := g++
-CFLAGS := --std=c++11 -O3 -lpthread
+CFLAGS := --std=c++17 -O3 -funroll-loops -lpthread
 
 # Rules
 all: exec
 
-debug: CFLAGS := --std=c++11 -g -lpthread
+debug: CFLAGS := --std=c++17 -g -lpthread
 debug: clean exec
 
-profile: CFLAGS := --std=c++11 -pg
+profile: CFLAGS := --std=c++17 -pg
 profile: clean exec
 	
 verbose: CFLAGS := -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy \

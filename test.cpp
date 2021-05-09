@@ -5,6 +5,7 @@
 #include <math.h>
 #include <limits>
 #include <random>
+#include "headers/Tmesh.hpp"
 
 void print(Vect v) {
     std::cout << "(" << v.get_x() << " " << v.get_y() << " " << v.get_z() << ")" << std::endl;
@@ -43,5 +44,28 @@ int main() {
         sum += t2*cos(x2*y2*z2)/gpdf(x2, y2, z2);
     }
     std::cout << sum/100000 << std::endl;
+    Vect normal = Vect(1, 2, 0).normalize();
+    double r1 = uniform(engine);
+    double r2 = uniform(engine);
+    double sqrt1mr2 = sqrt(1-r2);
+    double twopir1 = 2*M_PI*r1;
+    double x = cos(twopir1)*sqrt1mr2;
+    double y = sin(twopir1)*sqrt1mr2;
+    double z = sqrt(r2);
+    Vect T1(0,0,0);
+    Vect T2(0,0,0);
+    if (abs(x) <= abs(y), abs(x) <= abs(z)) {
+        T1 = Vect(0, -z, y).normalize();
+    } else if (abs(y) <= abs(x), abs(y) <= abs(z)) {
+        T1 = Vect(-z, 0, x).normalize();
+    } else {
+        T1 = Vect(-y, x, 0).normalize();
+    }
+    T2 = T1.cross(normal);
+    print(T1);
+    print(T2);
+    print(normal);
+    std::cout << normal.dot(T2) << std::endl;
+    std::cout << T1.dot(T2) << std::endl;
     return 0;
 }

@@ -41,12 +41,28 @@ Vect& Vect::operator+=(const Vect other) {
     return *this;
 }
 
+bool Vect::operator==(const Vect other) const {
+    return (coors[0] == other.get_x() && coors[1] == other.get_y() && coors[2] == other.get_z());
+}
+
+double Vect::operator[](int i) const {
+    return coors[i];
+}
+
+double& Vect::operator[](int i) {
+    return coors[i];
+}
+
 Vect Vect::operator/(const double scalar) const {
     return Vect(coors[0]/scalar, coors[1]/scalar, coors[2]/scalar);
 }
 
 Vect Vect::operator*(const double scalar) const {
     return Vect(coors[0]*scalar, coors[1]*scalar, coors[2]*scalar);
+}
+
+Vect Vect::operator*(const Vect other) const {
+    return Vect(coors[0]*other.get_x(), coors[1]*other.get_y(), coors[2]*other.get_z());
 }
 
 double Vect::dot(const Vect other) const {
